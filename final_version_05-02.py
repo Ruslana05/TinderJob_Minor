@@ -357,10 +357,15 @@ async def view_skill_comment(message: types.Message, state: FSMContext):
 
     if skill:
         # Отправляем комментарий к скиллу
-        await message.answer(f"▫️ Уровень скилла от 1 до 10 '{skill_name}':{skill['level']}")
+        await message.answer(f"▫️ Уровень скилла от 1 до 10 '{skill_name}':  {skill['level']}")
         await message.answer(f"\n▫️ Комментарий к скиллу '{skill_name}':\n{skill['note']}")
     else:
-        await message.answer("❗ Скилл не найден. Выберите другой скилл или нажмите '🔙 Вернуться в меню'.")
+        if message.text not in ["🔙 Вернуться в меню"]:  # Проверяем, не нажал ли пользователь кнопку
+            await message.answer("❗ Скилл не найден. Вы вышли из режима выбора скиллов.")
+            await state.clear()  # Очищаем состояние
+        else:
+            await message.answer("❗ Скилл не найден. Выберите другой скилл или нажмите '🔙 Вернуться в меню'.")
+
 # КОНЕЦ КНОПКИ "🪪 Посмотреть профиль"
 
 # Путь к файлам (пользовательский ID будет использоваться для создания уникальных файлов)
@@ -586,7 +591,7 @@ async def finish_profile(message: Message, state: FSMContext):
             with open(skills_file, 'r', encoding='utf-8') as file:
                 skills = json.load(file)
                 for skill in skills:
-                    profile_info += f"🔸 {skill['skill']} (Уровень: {skill['level']}) - {skill['note']}\n"
+                    profile_info += f"🔸 {skill['skill']} (Уровень:  {skill['level']}) - {skill['note']}\n"
 
         # Создаём кнопку "Вернуться в меню"
         keyboard = ReplyKeyboardMarkup(
@@ -792,7 +797,7 @@ async def finish_profile2(message: Message, state: FSMContext):
             with open(skills_file, 'r', encoding='utf-8') as file:
                 skills = json.load(file)
                 for skill in skills:
-                    profile_info2 += f"🔹 {skill['skill']} (Уровень: {skill['level']}) - {skill['note']}\n"
+                    profile_info2 += f"🔹 {skill['skill']} (Уровень:  {skill['level']}) - {skill['note']}\n"
 
         # Создаём кнопку "Вернуться в меню"
         keyboard = ReplyKeyboardMarkup(
